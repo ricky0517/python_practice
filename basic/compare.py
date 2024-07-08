@@ -1,0 +1,6 @@
+print(10 == 10)
+print(20 != 22)
+print(10 > 10)
+print(10 >= 10)
+print(10 < 10)
+print(10 <= 10)
