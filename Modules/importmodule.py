@@ -8,4 +8,4 @@ print(m.sub(40, 5))
 from module import *
 
 print(add(5, 60))
-print(sub(50, 5))
+print( sub(50, 5))
