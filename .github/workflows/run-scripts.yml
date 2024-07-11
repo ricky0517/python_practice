@@ -21,7 +21,4 @@ jobs:
 
     - name: Find all Python files and run them
       run: |
-        find . -name '*.py' | while read file; do
-          echo "Running $file..."
-          python "$file"
-        done
+        find . -name '*.py' -exec python {} \;
