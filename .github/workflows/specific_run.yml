@@ -19,17 +19,12 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        python-version: '3.10'  # You can adjust the Python version as needed
+        python-version: '3.10'
 
     - name: Install Python dependencies dynamically
       run: |
         FILE_PATH=$(find . -name ${{ github.event.inputs.filename }} | head -n 1)
-        if [ -z "$FILE_PATH" ]; then
-          echo "File not found!"
-          exit 1
-        fi
         echo "Running $FILE_PATH..."
-        # Updated regex to capture more complex imports
         DEPS=$(grep -oP '(?<=^import )\w+|(?<=^from )\w+' "$FILE_PATH" | sort -u | tr '\n' ' ')
         if [ -n "$DEPS" ]; then
           echo "Installing dependencies found in the file: $DEPS"
