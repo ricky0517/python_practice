@@ -28,5 +28,7 @@ jobs:
     - name: Find and run the specified Python file
       run: |
         FILE_PATH=$(find . -name ${{ github.event.inputs.filename }} | head -n 1)
+        DEPS=$(grep -oP '^import \K\w+' "$FILE_PATH" | tr '\n' ' ')
+        pip install $DEPS
         python "$FILE_PATH"
 
