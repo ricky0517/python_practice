@@ -1,4 +1,4 @@
-name: Run Specific Python File
+name: Run Specified Python File
 
 on:
   workflow_dispatch:
@@ -19,16 +19,25 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        python-version: '3.10'
+        python-version: '3.10'  # You can adjust the Python version as needed
 
-    - name: Install Python dependencies (if any)
-      run: |
-        python -m pip install --upgrade pip
-
-    - name: Find and run the specified Python file
+    - name: Install Python dependencies dynamically
       run: |
         FILE_PATH=$(find . -name ${{ github.event.inputs.filename }} | head -n 1)
-        DEPS=$(grep -oP '^import \K\w+' "$FILE_PATH" | tr '\n' ' ')
-        pip install $DEPS
-        python "$FILE_PATH"
+        if [ -z "$FILE_PATH" ]; then
+          echo "File not found!"
+          exit 1
+        fi
+        echo "Running $FILE_PATH..."
+        # Updated regex to capture more complex imports
+        DEPS=$(grep -oP '(?<=^import )\w+|(?<=^from )\w+' "$FILE_PATH" | sort -u | tr '\n' ' ')
+        if [ -n "$DEPS" ]; then
+          echo "Installing dependencies found in the file: $DEPS"
+          pip install $DEPS
+        else
+          echo "No dependencies found to install."
+        fi
 
+    - name: Execute the Python file
+      run: |
+        python $FILE_PATH
